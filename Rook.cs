@@ -21,8 +21,7 @@ namespace CSharpChessRemake
         public override void recordPiecePotentialMoves(Chessboard board)
         {
             this.resetPotentialMoves();
-            PieceMoveChecks.recordPotentialHorizontalMoves(this, board);
-            PieceMoveChecks.recordPotentialVerticalMoves(this, board);
+            PieceMoveChecks.recordPotentialOrthagonalMoves(this, board);
         }
 
 
