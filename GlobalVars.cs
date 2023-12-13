@@ -19,11 +19,21 @@ namespace CSharpChessRemake
             UNASSIGNED
         }
 
+
         public enum PieceColor
         {
             Black,
             White
         }
+
+        public enum Direction 
+        { 
+            Up = -8,
+            Down = 8,
+            Left= -1,
+            Right = 1
+        }
+
 
         public const int NUM_OF_SQUARES = 64;
 
