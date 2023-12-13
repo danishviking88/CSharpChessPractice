@@ -8,12 +8,14 @@ namespace CSharpChessRemake
 {
     public abstract class Piece
     {
-        private GlobalVars.PieceType type;
+
         private int startingPosition;
         private int currentPosition;
-        private GlobalVars.PieceColor color;
         private bool[] potentialMoves;
+        private GlobalVars.PieceType type;
+        private GlobalVars.PieceColor color;
         public string textIcon;
+
         // I wonder if there is value is having a "previousPosition"? in order to rewind a board state?
         // Or perhaps every piece should have an ArrayList of its positions through the game,
         // in order to rewind the game to any give state? Just a thought. Might be impressive to implement. 
@@ -21,12 +23,12 @@ namespace CSharpChessRemake
 
         public Piece(int startingPosition, GlobalVars.PieceColor color) 
         {
-            this.type = GlobalVars.PieceType.UNASSIGNED;
             this.startingPosition = startingPosition;
             this.currentPosition = this.startingPosition;
-            this.color = color;
             this.potentialMoves = new bool[64];
             this.resetPotentialMoves();
+            this.type = GlobalVars.PieceType.UNASSIGNED;
+            this.color = color;
             this.textIcon = "";
         }
 
@@ -96,6 +98,7 @@ namespace CSharpChessRemake
         {
             return this.startingPosition;
         }
+
         
     }
 }
