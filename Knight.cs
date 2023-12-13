@@ -20,7 +20,7 @@ namespace CSharpChessRemake
         public override void recordPiecePotentialMoves(Chessboard board)
         {
             this.resetPotentialMoves();
-            PieceMoveChecks.recordKnightPotentialMoves(this, board);
+            PieceMoveChecks.recordPotentialKnightMoves(this, board);
         }
 
 
