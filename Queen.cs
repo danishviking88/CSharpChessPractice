@@ -22,8 +22,7 @@ namespace CSharpChessRemake
         {
             this.resetPotentialMoves();
             PieceMoveChecks.recordPotentialDiagonalMoves(this, board);
-            PieceMoveChecks.recordPotentialHorizontalMoves(this, board);
-            PieceMoveChecks.recordPotentialVerticalMoves(this, board);
+            PieceMoveChecks.recordPotentialOrthagonalMoves(this, board);
         }
     }
 }
