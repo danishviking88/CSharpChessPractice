@@ -10,17 +10,24 @@ namespace CSharpChessRemake
     {
         private int pointValue;
 
-        public Pawn(int startingPosition, GlobalVars.PieceColor color) : base(startingPosition, color)
+        public Pawn(int startingPosition, GlobalVars.Color color) : base(startingPosition, color)
         {
             this.pointValue = 1;
-            this.textIcon = "Pa";
+            if (this.getColor() == GlobalVars.Color.White)
+            {
+                this.textIcon = "P";
+            }
+            else
+            {
+                this.textIcon = "p";
+            }
             this.setPieceType(GlobalVars.PieceType.Pawn);
         }
 
 
         public override void recordPiecePotentialMoves(Chessboard board)
         {
-            this.resetPotentialMoves();
+            this.resetPotentialMovesAndCaptures();
             PieceMoveChecks.recordPotentialPawnMoves(this, board);
         }
 
