@@ -9,39 +9,12 @@ namespace CSharpChessRemake
     public class PieceMoveChecks
     {
         // Checks and records all squares that a Rook could move (all 4 directions). ----------------------------------------------
-
         public static void recordPotentialOrthagonalMoves(Piece piece, Chessboard board)
         {
             int[] moveModifiers = { -8, -1, 8, 1 };
-            for (int i = 1; i < 8; i++)
+            foreach (int modifier in moveModifiers)
             {
-                foreach (int modifier in moveModifiers)
-                {
-                    int potentialMove = piece.getCurrentPosition() + (i * modifier);
-
-                    // Check if piece move is in bounds of the board.
-                    if (PieceMoveChecks.isMoveInBounds(piece, potentialMove) == false)
-                    {
-                        continue;
-                    }
-                    // Check if the square for the potential move it occupied. 
-                    else if (board.checkIfSquareIsOccupied(potentialMove) == true)
-                    {
-                        continue;
-                    }
-                    // Finally, record the potential move if all checks have been made. 
-                    else
-                    {
-                        piece.addSinglePotentialMove(potentialMove);
-                    }
-                }
-
-                // If the piece is a King, break after 1 for-loop cycle so that it only records 1 orthagonal square away. 
-                if (piece.getPieceType() == GlobalVars.PieceType.King)
-                {
-                    break;
-                }
-
+                PieceMoveChecks.recordAllMovesInDirectionOfModifier(piece, board, modifier);
             }
         }
 
@@ -50,46 +23,69 @@ namespace CSharpChessRemake
         public static void recordPotentialDiagonalMoves(Piece piece, Chessboard board)
         {
             int[] moveModifiers = { -9, -7, 9, 7 };
-            for (int i = 1; i < 8; i++) 
-            {
-                foreach(int modifier in moveModifiers)
-                {
-                    int potentialMove = piece.getCurrentPosition() + (i * modifier);
 
-                    // Check if piece move is in bounds of the board.
-                    if (PieceMoveChecks.isMoveInBounds(piece, potentialMove) == false)
-                    {
-                        continue;
-                    }
-                    // Check if the square for the potential move it occupied. 
-                    else if (board.checkIfSquareIsOccupied(potentialMove) == true)
-                    {
-                        continue;
-                    }
-                    else
-                    // Finally, record the potential move if all checks have been made. 
+            foreach (int modifier in moveModifiers)
+            {
+                PieceMoveChecks.recordAllMovesInDirectionOfModifier(piece, board, modifier);
+            }
+        }
+
+
+        // Record potential Knight Moves ------------------------------------------------------------------------------
+        public static void recordPotentialKnightMoves(Piece piece, Chessboard board)
+        {
+            int[] moveModifiers = { -15, -6, 10, 17, 15, 6, -10, -17 };
+
+            foreach (int modifier in moveModifiers)
+            {
+                int potentialMove = piece.getCurrentPosition() + modifier;
+                int potentialMoveHorPos = potentialMove % 8;
+
+                if (potentialMove < 0 || potentialMove > 63)
+                {
+                    continue;
+                }
+                else if (piece.getCurrentHorPos() == 0 && (potentialMoveHorPos == 6 || potentialMoveHorPos == 7))
+                {
+                    continue;
+                }
+                else if (piece.getCurrentHorPos() == 1 && potentialMoveHorPos == 7) 
+                {
+                    continue;
+                }
+                else if (piece.getCurrentHorPos() == 7 && (potentialMoveHorPos == 0 || potentialMoveHorPos == 1))
+                {
+                    continue;
+                }
+                else if (piece.getCurrentHorPos() == 6 && potentialMoveHorPos == 0)
+                {
+                    continue;
+                }
+                else if (board.checkIfSquareIsOccupied(potentialMove) == true)
+                {
+                    Piece pieceInOccupiedSquare = board.pieceBoardPositions[potentialMove];
+                    if (piece.getColor() != pieceInOccupiedSquare.getColor())
                     {
                         piece.addSinglePotentialMove(potentialMove);
+                        piece.addSinglePotentialCapture(potentialMove);
                     }
+                    continue;
                 }
-
-                // If the piece is a King, break after 1 for-loop cycle so that it only records 1 diagonal square away. 
-                if (piece.getPieceType() == GlobalVars.PieceType.King)
+                else
                 {
-                    break;
+                    piece.addSinglePotentialMove(potentialMove);
                 }
-
             }
         }
 
 
         // Checks and records all squares that a Pawn could move. ------------------------------------------------------
         public static void recordPotentialPawnMoves(Piece piece, Chessboard board)
-        {
+            {
             // Create a move modifier that defaults to a White Pawn's movement direction.
             // The if-statement changes the modifier to the other direction if the Pawn is Black.
             int moveModifier = -8;
-            if (piece.getColor() == GlobalVars.PieceColor.Black)
+            if (piece.getColor() == GlobalVars.Color.Black)
             {
                 moveModifier = 8;
             }
@@ -103,22 +99,27 @@ namespace CSharpChessRemake
                 {
                     piece.addSinglePotentialMove(spaceDirectlyForward);
                 }
+
                 // Checks if capture diagonal forward and to the right is occupied, and if move goes off right edge.
-                else if (board.checkIfSquareIsOccupied(spaceDirectlyForward + 1) == true && (spaceDirectlyForward + 1) % 8 != 0)
+                if (board.checkIfSquareIsOccupied(spaceDirectlyForward + 1) == true && (spaceDirectlyForward + 1) % 8 != 0)
                 {
-                    piece.addSinglePotentialMove(spaceDirectlyForward);
+                    piece.addSinglePotentialMove(spaceDirectlyForward + 1);
+                    piece.addSinglePotentialCapture(spaceDirectlyForward + 1);
                 }
+
                 // Checks if capture diagonal forward and to the left is occupied, and if move goes off left edge.
-                else if (board.checkIfSquareIsOccupied(spaceDirectlyForward - 1) == true && (spaceDirectlyForward - 1) % 8 != 7)
+                if (board.checkIfSquareIsOccupied(spaceDirectlyForward - 1) == true && (spaceDirectlyForward - 1) % 8 != 7)
                 {
-                    piece.addSinglePotentialMove(spaceDirectlyForward);
+                    piece.addSinglePotentialMove(spaceDirectlyForward - 1);
+                    piece.addSinglePotentialCapture(spaceDirectlyForward - 1);
                 } 
+
                 // If the pawn is at starting position and the forward two spaces are empty, allow En Passant.
-                else if (piece.getCurrentPosition() == piece.getStartingPosition())
+                if (piece.getCurrentPosition() == piece.getStartingPosition())
                 {
                     if (board.checkIfSquareIsOccupied(spaceDirectlyForward) == false && board.checkIfSquareIsOccupied(spaceDirectlyForward + moveModifier) == false)
                     {
-                        piece.addSinglePotentialMove(spaceDirectlyForward);
+                        piece.addSinglePotentialMove(spaceDirectlyForward  + moveModifier);
                     }
                 }
                 // There is a section that will need to be added here
@@ -128,47 +129,28 @@ namespace CSharpChessRemake
         }
 
 
-        // Record potential Knight Moves ------------------------------------------------------------------------------
-        public static void recordPotentialKnightMoves(Piece piece, Chessboard board) 
-        {
-            int[] moveModifier = { -9, -8, -7, -1, 1, 7, 8, 9 };
-
-            foreach (int modifier in moveModifier)
-            {
-                int potentialMove = piece.getCurrentPosition() + modifier;
-
-                // Check if piece move is in bounds of the board.
-                if (PieceMoveChecks.isMoveInBounds(piece, potentialMove) == false)
-                {
-                    continue;
-                }
-                //Checks if the potential square is occupied.
-                else if (board.checkIfSquareIsOccupied(potentialMove) == true)
-                {
-                    continue;
-                }
-                // If it passes all checks, record the potential move.
-                else
-                {
-                    piece.addSinglePotentialMove(potentialMove);
-                }
-                
-            }
-        }
-
-
         // Checks if a move is in bounds on the board. ---------------------------------------------------------------------------
         public static bool isMoveInBounds(Piece piece, int potentialMove) 
         {
             int potentialMoveHorPos = potentialMove % 8;
+            int potentialMoveVertPos = (int)Math.Truncate((double)potentialMove / 8);
 
             // If potential move is smaller than 0 or bigger than 63, it is off the board.
             if (potentialMove < 0 || potentialMove > 63)
             {
                 return false;
             }
+            else if (piece.getCurrentVertPos() == potentialMoveVertPos)
+            {
+                return true;
+            }
+            else if (piece.getCurrentHorPos() + piece.getCurrentVertPos() == (potentialMoveHorPos + potentialMoveVertPos))
+
+            {
+                return true;
+            }
             // If potential move is smaller, but Horizontal position is higher, an off the edge occurence has happened. 
-            else if(potentialMove < piece.getCurrentPosition() && potentialMoveHorPos > piece.getCurrentHorPos())
+            else if (potentialMove < piece.getCurrentPosition() && potentialMoveHorPos > piece.getCurrentHorPos())
             {
                 return false;
             }
@@ -181,14 +163,59 @@ namespace CSharpChessRemake
             {
                 return true;
             }
+
         }
 
 
+        // This checks all moves and records them starting on the current position and towards the direction of the modifier. 
+        public static void recordAllMovesInDirectionOfModifier(Piece piece, Chessboard board, int modifier)
+        {
+            for (int i = 1; i < 8; i++)
+            {
+                int potentialMove = piece.getCurrentPosition() + (i * modifier);
+                int potentialMoveHorPos = potentialMove % 8;
+
+                // Check if piece move is in bounds of the board.
+                if (PieceMoveChecks.isMoveInBounds(piece, potentialMove) == false)
+                {
+                    break;
+                }
+                // Check if the square for the potential move it occupied. 
+                else if (board.checkIfSquareIsOccupied(potentialMove) == true)
+                {
+                    Piece pieceInOccupiedSquare = board.pieceBoardPositions[potentialMove];
+                    if (piece.getColor() != pieceInOccupiedSquare.getColor())
+                    {
+                        piece.addSinglePotentialMove(potentialMove);
+                        piece.addSinglePotentialCapture(potentialMove);
+                    }
+                    break;
+                }
+                // Finally, record the potential move if all checks have been made. 
+                else
+                {
+                    piece.addSinglePotentialMove(potentialMove);
+                }
+
+                // If the piece is a King, break after 1 for-loop cycle so that it only records in each direction once.
+                if (piece.getPieceType() == GlobalVars.PieceType.King)
+                {
+                    break;
+                }
+                // This is a bit of goofy coding, but this was added have a Bishop stop once it hits the left or right edge.
+                else if (piece.getPieceType() == GlobalVars.PieceType.Bishop && (potentialMoveHorPos == 0 || potentialMoveHorPos == 7))
+                {
+                    break;
+                }
+                // Same as above, but affecting the Queen in order to prevent off the board left or right edge movement.
+                else if (piece.getPieceType() == GlobalVars.PieceType.Queen && (potentialMoveHorPos == 0 || potentialMoveHorPos == 7))
+                {
+                    break;
+                }
+            }
+        }
+
         
-
-
-
-
 
 
     }
