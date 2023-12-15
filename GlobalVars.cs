@@ -20,7 +20,7 @@ namespace CSharpChessRemake
         }
 
 
-        public enum PieceColor
+        public enum Color
         {
             Black,
             White
