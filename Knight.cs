@@ -10,16 +10,23 @@ namespace CSharpChessRemake
     {
         private int pointValue;
 
-        public Knight(int startingPosition, GlobalVars.PieceColor color) : base(startingPosition, color)
+        public Knight(int startingPosition, GlobalVars.Color color) : base(startingPosition, color)
         {
             this.pointValue = 3;
-            this.textIcon = "Kn";
+            if (this.getColor() == GlobalVars.Color.White)
+            {
+                this.textIcon = "N";
+            }
+            else
+            {
+                this.textIcon = "n";
+            }
             this.setPieceType(GlobalVars.PieceType.Knight);
         }
 
         public override void recordPiecePotentialMoves(Chessboard board)
         {
-            this.resetPotentialMoves();
+            this.resetPotentialMovesAndCaptures();
             PieceMoveChecks.recordPotentialKnightMoves(this, board);
         }
 
@@ -27,4 +34,5 @@ namespace CSharpChessRemake
         
     }
 }
+
 
