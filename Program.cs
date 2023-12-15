@@ -12,6 +12,16 @@ namespace CSharpChessRemake
         {
             Chessboard board = new Chessboard();
             GlobalStatMethods.printChessboard(board);
+
+
+            // for testing only, delete later
+            int testSquare = 51;
+            Piece piece = board.pieceBoardPositions[testSquare];
+            piece.tempMethodPrintAllPotentialMoves(board);
+
+            
+            
+            
         }
     }
 }
