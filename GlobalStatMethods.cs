@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CSharpChessRemake
 {
-    internal class GlobalStatMethods
+    public class GlobalStatMethods
     {
         public static void printChessboard(Chessboard board)
         {
@@ -19,21 +19,36 @@ namespace CSharpChessRemake
                 }
                 else
                 {
-                    if (i < 10)
+                    string space1;
+                    string space2;
+                    if ((i / 8) % 2 == 0)
                     {
-                        Console.Write(" ");
+                        space1 = "+";
+                        space2 = "#";
                     }
-                    Console.Write(i);
+                    else
+                    {
+                        space1 = "#";
+                        space2 = "+";
+                    }
+                 
+                        if (i % 2 == 0)
+                    {
+                        Console.Write(space1);
+                    }
+                    else
+                    {
+                        Console.Write(space2);
+                    }
                 }
-
-            Console.Write("  ");
+                
+                Console.Write(" ");
 
                 if (i % 8 == 7)
                 {
-                    Console.Write("\n\n");
+                    Console.Write("\n");
                 }
             }
-            Console.WriteLine();
         }
     }
 }
