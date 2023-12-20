@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 namespace CSharpChessRemake
 {
@@ -73,9 +74,9 @@ namespace CSharpChessRemake
 
 
         // Checks if the boardspace is occupied. 
-        public bool checkIfSquareIsOccupied(int square)
+        public bool checkIfSquareIsOccupied(Nullable<int> square)
         {
-            if (this.pieceBoardPositions[square] != null)
+            if (this.pieceBoardPositions[(int)square] != null)
             {
                 return true;
             } 
@@ -128,7 +129,7 @@ namespace CSharpChessRemake
 
         
         // Record all potential moves of the chosen color. 
-        public void recordAllPotentialMovesOfOneColor(GlobalVars.Color chosenColor)
+        public void recordAllPotentialMovesAndCapturesOfOneColor(GlobalVars.Color chosenColor)
         {
             this.resetGlobalPotentialMovesAndCaptures();
 
@@ -158,6 +159,8 @@ namespace CSharpChessRemake
             }
         }
 
+
+        
 
     }
 }
