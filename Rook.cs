@@ -38,3 +38,9 @@ namespace CSharpChessRemake
 
     }
 }
+
+
+
+
+    }
+}
