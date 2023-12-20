@@ -44,7 +44,7 @@ namespace CSharpChessRemake
         private void deleteMovesPuttingKingInCheck(Chessboard board)
         {
             GlobalVars.Color colorOfEnemyPieces = board.getOppositeOfWhoseTurnItIs();
-            board.recordAllPotentialMovesOfOneColor(colorOfEnemyPieces);
+            board.recordAllPotentialMovesAndCapturesOfOneColor(colorOfEnemyPieces);
             for (int i = 0; i < GlobalVars.NUM_OF_SQUARES; i++)
             {
                 if (this.potentialMoves[i] == true && board.globalPotentialCaptures[i] == true)
