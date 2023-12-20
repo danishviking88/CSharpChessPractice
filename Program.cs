@@ -6,22 +6,30 @@ using System.Threading.Tasks;
 
 namespace CSharpChessRemake
 {
-    class Program 
+    public class Queen : Piece
     {
-        public static void Main()
+        private int pointValue;
+
+        public Queen(int startingPosition, GlobalVars.Color color) : base(startingPosition, color)
         {
-            Chessboard board = new Chessboard();
-            GlobalStatMethods.printChessboard(board);
+            this.pointValue = 9;
+            if (this.getColor() == GlobalVars.Color.White)
+            {
+                this.textIcon = "Q";
+            }
+            else
+            {
+                this.textIcon = "q";
+            }
+            this.setPieceType(GlobalVars.PieceType.Queen);
+        }
 
 
-            // for testing only, delete later
-            int testSquare = 51;
-            Piece piece = board.pieceBoardPositions[testSquare];
-            piece.tempMethodPrintAllPotentialMoves(board);
-
-            
-            
-            
+        public override void recordPiecePotentialMoves(Chessboard board)
+        {
+            this.resetPotentialMovesAndCaptures();
+            PieceMoveChecks.recordPotentialDiagonalMoves(this, board);
+            PieceMoveChecks.recordPotentialOrthagonalMoves(this, board);
         }
     }
 }
