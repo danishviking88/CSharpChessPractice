@@ -38,8 +38,8 @@ namespace CSharpChessRemake
 
             foreach (int modifier in moveModifiers)
             {
-                int potentialMove = piece.getCurrentPosition() + modifier;
-                int potentialMoveHorPos = potentialMove % 8;
+                Nullable<int> potentialMove = piece.getCurrentPosition() + modifier;
+                Nullable<int> potentialMoveHorPos = potentialMove % 8;
 
                 if (potentialMove < 0 || potentialMove > 63)
                 {
@@ -63,17 +63,17 @@ namespace CSharpChessRemake
                 }
                 else if (board.checkIfSquareIsOccupied(potentialMove) == true)
                 {
-                    Piece pieceInOccupiedSquare = board.pieceBoardPositions[potentialMove];
+                    Piece pieceInOccupiedSquare = board.pieceBoardPositions[(int)potentialMove];
                     if (piece.getColor() != pieceInOccupiedSquare.getColor())
                     {
-                        piece.addSinglePotentialMove(potentialMove);
-                        piece.addSinglePotentialCapture(potentialMove);
+                        piece.addSinglePotentialMove((int)potentialMove);
+                        piece.addSinglePotentialCapture((int)potentialMove);
                     }
                     continue;
                 }
                 else
                 {
-                    piece.addSinglePotentialMove(potentialMove);
+                    piece.addSinglePotentialMove((int)potentialMove);
                 }
             }
         }
@@ -90,7 +90,7 @@ namespace CSharpChessRemake
                 moveModifier = 8;
             }
 
-            int spaceDirectlyForward = piece.getCurrentPosition() + moveModifier;
+            int spaceDirectlyForward = (int)piece.getCurrentPosition() + moveModifier;
             // Checks pawn is in bounds.
             if (spaceDirectlyForward >= 0 && spaceDirectlyForward <= 63)
             {
@@ -172,7 +172,7 @@ namespace CSharpChessRemake
         {
             for (int i = 1; i < 8; i++)
             {
-                int potentialMove = piece.getCurrentPosition() + (i * modifier);
+                int potentialMove = (int)piece.getCurrentPosition() + (i * modifier);
                 int potentialMoveHorPos = potentialMove % 8;
 
                 // Check if piece move is in bounds of the board.
@@ -215,7 +215,31 @@ namespace CSharpChessRemake
             }
         }
 
-        
+
+        public static bool checkIfActiveKingIsInCheck(Chessboard board)
+        {
+            // Determine which King is the active king.
+            Piece king;
+            if (board.getWhoseTurnItIs() == GlobalVars.Color.White)
+            {
+                king = board.whiteKingReference;
+            }
+            else
+            {
+                king = board.blackKingReference;
+            }
+
+            // Record all the potential moves of the opposite color
+            board.recordAllPotentialMovesAndCapturesOfOneColor(board.getOppositeOfWhoseTurnItIs());
+            
+            // Check if the King is in check.
+            if (board.globalPotentialCaptures[(int)king.getCurrentPosition()] == true)
+            {
+                return true;
+            }
+
+            return false;
+        }
 
 
     }
