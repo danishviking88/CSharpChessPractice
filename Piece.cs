@@ -9,9 +9,8 @@ namespace CSharpChessRemake
     public abstract class Piece
     {
 
-        private int startingPosition;
-        private int currentPosition;
-        private int backupOfPreviousPosition;
+        private Nullable<int> startingPosition;
+        private Nullable<int> currentPosition;
         protected bool[] potentialMoves;
         protected bool[] potentialCaptures;
         private GlobalVars.PieceType type;
@@ -27,7 +26,6 @@ namespace CSharpChessRemake
         {
             this.startingPosition = startingPosition;
             this.currentPosition = this.startingPosition;
-            this.backupOfPreviousPosition = this.startingPosition;
             this.potentialMoves = new bool[64];
             this.potentialCaptures = new bool[64];
             this.resetPotentialMovesAndCaptures();
@@ -79,7 +77,7 @@ namespace CSharpChessRemake
 
 
         // Getters and setters.
-        public int getCurrentHorPos() 
+        public Nullable<int> getCurrentHorPos() 
         {
             return this.currentPosition % 8;
         }
@@ -91,7 +89,7 @@ namespace CSharpChessRemake
         }
 
 
-        public int getCurrentPosition()
+        public Nullable<int> getCurrentPosition()
         {
             return this.currentPosition;
         }
@@ -101,6 +99,12 @@ namespace CSharpChessRemake
         {
             // TODO, need to pass information to update the current position after a move. 
             this.currentPosition = squareNumber;
+        }
+
+
+        public void setCurrentPositionToNull()
+        {
+            this.currentPosition = null;
         }
 
 
@@ -133,7 +137,7 @@ namespace CSharpChessRemake
         }
 
 
-        public int getStartingPosition()
+        public Nullable<int> getStartingPosition()
         {
             return this.startingPosition;
         }
